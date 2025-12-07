@@ -32,57 +32,6 @@ export class SceneManager {
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.container.appendChild(this.renderer.domElement);
 
-        // Controls
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableDamping = true;
-        this.controls.dampingFactor = 0.05;
-
-        // Lights - Sistema de iluminación estilo productora (sombras dramáticas)
-        // Luz ambiental moderada
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-        this.scene.add(ambientLight);
-
-        // Luz direccional principal (Key Light) desde arriba
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        dirLight.position.set(2, 10, 4);
-        dirLight.castShadow = true;
-
-        // Configuración de sombras más dramáticas
-        dirLight.shadow.mapSize.width = 4096;
-        dirLight.shadow.mapSize.height = 4096;
-        dirLight.shadow.camera.near = 0.5;
-        dirLight.shadow.camera.far = 50;
-        dirLight.shadow.camera.left = -10;
-        dirLight.shadow.camera.right = 10;
-        dirLight.shadow.camera.top = 10;
-        dirLight.shadow.camera.bottom = -10;
-        dirLight.shadow.bias = -0.0005;
-        dirLight.shadow.radius = 4; // Sombras suaves pero definidas
-        this.scene.add(dirLight);
-
-        // Luz de relleno muy sutil desde el frente
-        const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
-        fillLight.position.set(0, 2, 8);
-        this.scene.add(fillLight);
-
-        // Luz de borde desde atrás a la izquierda
-        const rimLight = new THREE.DirectionalLight(0xffe4c4, 0.4);
-        rimLight.position.set(-5, 4, -2);
-        this.scene.add(rimLight);
-
-        // Plano para recibir sombras con efecto de reflejo
-        const shadowPlaneGeometry = new THREE.PlaneGeometry(25, 25);
-        const shadowPlaneMaterial = new THREE.ShadowMaterial({ opacity: 0.5 }); // Sombra más pronunciada
-        this.shadowPlane = new THREE.Mesh(shadowPlaneGeometry, shadowPlaneMaterial);
-        this.shadowPlane.rotation.x = -Math.PI / 2;
-        this.shadowPlane.position.y = -2.26; // Muy cerca del libro
-        this.shadowPlane.receiveShadow = true;
-        this.scene.add(this.shadowPlane);
-
-        // Book
-        this.book = new BookMesh();
-        this.scene.add(this.book.mesh);
-
         // Handle Resize
         window.addEventListener('resize', this.onWindowResize.bind(this));
     }
