@@ -30,4 +30,3 @@ A backend-free 3D mockup generator for books. Built with [Three.js](https://thre
 ## Assets
 - Icons: Phosphor Icons / FontAwesome (via CDN/SVG)
 - Fonts: Google Fonts (Inter)
-- Textures: 
