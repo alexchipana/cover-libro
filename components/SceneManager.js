@@ -32,57 +32,6 @@ export class SceneManager {
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.container.appendChild(this.renderer.domElement);
 
-        // Controls
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableDamping = true;
-        this.controls.dampingFactor = 0.05;
-
-        // Lights - Sistema de iluminación mejorado
-        // Luz ambiental suave para iluminar áreas sin luz directa
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.55);
-        this.scene.add(ambientLight);
-
-        // Luz direccional principal (Key Light) - simula luz del sol
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
-        dirLight.position.set(4, 7, 6);
-        dirLight.castShadow = true;
-
-        // Configuración de sombras de alta calidad
-        dirLight.shadow.mapSize.width = 2048;
-        dirLight.shadow.mapSize.height = 2048;
-        dirLight.shadow.camera.near = 0.5;
-        dirLight.shadow.camera.far = 50;
-        dirLight.shadow.camera.left = -10;
-        dirLight.shadow.camera.right = 10;
-        dirLight.shadow.camera.top = 10;
-        dirLight.shadow.camera.bottom = -10;
-        dirLight.shadow.bias = -0.0001;
-        dirLight.shadow.radius = 3; // Sombras más suaves
-        this.scene.add(dirLight);
-
-        // Luz de relleno (Fill Light) - ilumina las sombras desde el lado opuesto
-        const fillLight = new THREE.DirectionalLight(0xd4e6ff, 0.4);
-        fillLight.position.set(-5, 3, -5);
-        this.scene.add(fillLight);
-
-        // Luz de borde (Rim Light) - añade un borde brillante para definir el contorno
-        const rimLight = new THREE.PointLight(0xffffff, 0.5, 20);
-        rimLight.position.set(-3, 2, -3);
-        this.scene.add(rimLight);
-
-        // Plano invisible para recibir sombras
-        const shadowPlaneGeometry = new THREE.PlaneGeometry(20, 20);
-        const shadowPlaneMaterial = new THREE.ShadowMaterial({ opacity: 0.2 }); // Sombra más sutil
-        this.shadowPlane = new THREE.Mesh(shadowPlaneGeometry, shadowPlaneMaterial);
-        this.shadowPlane.rotation.x = -Math.PI / 2;
-        this.shadowPlane.position.y = -2.25; // Ajustado para estar más cerca del libro parado
-        this.shadowPlane.receiveShadow = true;
-        this.scene.add(this.shadowPlane);
-
-        // Book
-        this.book = new BookMesh();
-        this.scene.add(this.book.mesh);
-
         // Handle Resize
         window.addEventListener('resize', this.onWindowResize.bind(this));
     }
