@@ -9,12 +9,28 @@ export class BookMesh {
         this.thickness = 0.8;
         this.format = 'hardcover'; // 'hardcover' | 'softcover'
 
-        // Materials
+        // Materials - Mejorados para respuesta realista a iluminación
         this.materials = {
-            cover: new THREE.MeshStandardMaterial({ color: 0xeeeeee, roughness: 0.5 }),
-            spine: new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.5 }),
-            back: new THREE.MeshStandardMaterial({ color: 0xeeeeee, roughness: 0.5 }),
-            pages: new THREE.MeshStandardMaterial({ color: 0xfdfdfd, roughness: 0.9 })
+            cover: new THREE.MeshStandardMaterial({
+                color: 0xeeeeee,
+                roughness: 0.4,
+                metalness: 0.1
+            }),
+            spine: new THREE.MeshStandardMaterial({
+                color: 0xcccccc,
+                roughness: 0.5,
+                metalness: 0.05
+            }),
+            back: new THREE.MeshStandardMaterial({
+                color: 0xeeeeee,
+                roughness: 0.4,
+                metalness: 0.1
+            }),
+            pages: new THREE.MeshStandardMaterial({
+                color: 0xfdfdfd,
+                roughness: 0.9,
+                metalness: 0.0
+            })
         };
 
         this.initGeometry();
@@ -52,6 +68,8 @@ export class BookMesh {
         const frontGeo = new THREE.BoxGeometry(this.width, this.height, coverThickness);
         const frontMesh = new THREE.Mesh(frontGeo, this.materials.cover);
         frontMesh.position.z = (this.thickness / 2) - (coverThickness / 2);
+        frontMesh.castShadow = true;
+        frontMesh.receiveShadow = true;
         // Map UVs so the face (Z+) displays the texture correctly
         this.correctUVs(frontGeo, [4]); // 4 is usually the front face
 
@@ -59,6 +77,8 @@ export class BookMesh {
         const backGeo = new THREE.BoxGeometry(this.width, this.height, coverThickness);
         const backMesh = new THREE.Mesh(backGeo, this.materials.back);
         backMesh.position.z = -(this.thickness / 2) + (coverThickness / 2);
+        backMesh.castShadow = true;
+        backMesh.receiveShadow = true;
 
         // 3. Spine
         // Hardcover spine is usually curved but Box is easier for MVP. 
@@ -66,6 +86,8 @@ export class BookMesh {
         const spineGeo = new THREE.BoxGeometry(coverThickness, this.height, this.thickness);
         const spineMesh = new THREE.Mesh(spineGeo, this.materials.spine);
         spineMesh.position.x = -(this.width / 2) - (coverThickness / 2);
+        spineMesh.castShadow = true;
+        spineMesh.receiveShadow = true;
 
         // 4. Pages block
         const pagesWidth = this.width - overhang;
@@ -74,6 +96,8 @@ export class BookMesh {
         const pagesMesh = new THREE.Mesh(pagesGeo, this.materials.pages);
         // Shift pages to align with opposite of spine
         pagesMesh.position.x = (overhang / 2);
+        pagesMesh.castShadow = true;
+        pagesMesh.receiveShadow = true;
 
         this.mesh.add(frontMesh, backMesh, spineMesh, pagesMesh);
     }
@@ -102,6 +126,8 @@ export class BookMesh {
         ];
 
         const bookObj = new THREE.Mesh(geometry, mats);
+        bookObj.castShadow = true;
+        bookObj.receiveShadow = true;
         this.mesh.add(bookObj);
     }
 

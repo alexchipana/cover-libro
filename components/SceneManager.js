@@ -37,16 +37,47 @@ export class SceneManager {
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
 
-        // Lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        // Lights - Sistema de iluminación mejorado
+        // Luz ambiental suave para iluminar áreas sin luz directa
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
         this.scene.add(ambientLight);
 
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
-        dirLight.position.set(5, 10, 7);
+        // Luz direccional principal (Key Light) - simula luz del sol
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        dirLight.position.set(5, 8, 7);
         dirLight.castShadow = true;
-        dirLight.shadow.mapSize.width = 1024;
-        dirLight.shadow.mapSize.height = 1024;
+
+        // Configuración de sombras de alta calidad
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        dirLight.shadow.camera.near = 0.5;
+        dirLight.shadow.camera.far = 50;
+        dirLight.shadow.camera.left = -10;
+        dirLight.shadow.camera.right = 10;
+        dirLight.shadow.camera.top = 10;
+        dirLight.shadow.camera.bottom = -10;
+        dirLight.shadow.bias = -0.0001;
+        dirLight.shadow.radius = 3; // Sombras más suaves
         this.scene.add(dirLight);
+
+        // Luz de relleno (Fill Light) - ilumina las sombras desde el lado opuesto
+        const fillLight = new THREE.DirectionalLight(0xd4e6ff, 0.5);
+        fillLight.position.set(-5, 3, -5);
+        this.scene.add(fillLight);
+
+        // Luz de borde (Rim Light) - añade un borde brillante para definir el contorno
+        const rimLight = new THREE.PointLight(0xffffff, 0.6, 20);
+        rimLight.position.set(-3, 2, -3);
+        this.scene.add(rimLight);
+
+        // Plano invisible para recibir sombras
+        const shadowPlaneGeometry = new THREE.PlaneGeometry(20, 20);
+        const shadowPlaneMaterial = new THREE.ShadowMaterial({ opacity: 0.3 });
+        this.shadowPlane = new THREE.Mesh(shadowPlaneGeometry, shadowPlaneMaterial);
+        this.shadowPlane.rotation.x = -Math.PI / 2;
+        this.shadowPlane.position.y = -2.5;
+        this.shadowPlane.receiveShadow = true;
+        this.scene.add(this.shadowPlane);
 
         // Book
         this.book = new BookMesh();
