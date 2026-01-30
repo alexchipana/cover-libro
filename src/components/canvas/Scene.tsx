@@ -113,10 +113,8 @@ const Scene = forwardRef<SceneRef, SceneProps>((props, ref) => {
         preserveDrawingBuffer: true,
         antialias: true,
         alpha: true,
-        powerPreference: 'high-performance',
       }}
-      style={{ background: 'transparent' }}
-      shadows={props.lightingConfig.shadowsEnabled}
+      style={{ background: '#1a1a1a' }}
       dpr={[1, 2]}
     >
       <SceneContent {...props} ref={ref} />
