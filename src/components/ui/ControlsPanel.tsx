@@ -100,13 +100,6 @@ export function ControlsPanel({
     [onLightingChange]
   );
 
-  const handleStackCountChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      onBookConfigChange({ stackCount: parseInt(e.target.value) });
-    },
-    [onBookConfigChange]
-  );
-
   return (
     <aside className="controls-panel">
       <div className="panel-section">
@@ -137,23 +130,6 @@ export function ControlsPanel({
           >
             <option value="hard">Tapa Dura</option>
             <option value="soft">Tapa Blanda</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="panel-section">
-        <h3>Cantidad a Pila</h3>
-        <div className="control-group">
-          <select
-            className="select-input"
-            value={bookConfig.stackCount}
-            onChange={handleStackCountChange}
-          >
-            {[1, 2, 3, 4, 5].map((n) => (
-              <option key={n} value={n}>
-                {n} {n === 1 ? ' libro' : ' libros'}
-              </option>
-            ))}
           </select>
         </div>
       </div>

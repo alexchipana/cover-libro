@@ -6,7 +6,6 @@ export interface BookConfig {
   pageEdgeColor: string;
   width: number;
   height: number;
-  stackCount: number;
 }
 
 export interface LightingConfig {
