@@ -31,7 +31,7 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
         renderer.setSize(originalSize.x * 2, originalSize.y * 2, false);
         renderer.render(scene, camera);
 
-        const dataUrl = renderer.domElement.toDataURL('image/png', 1.0);
+        const dataUrl = renderer.domElement.toDataURL('image/png');
         renderer.setSize(originalSize.x, originalSize.y);
 
         const link = document.createElement('a');
@@ -55,11 +55,11 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
 
         {lightingConfig.shadowsEnabled && (
           <ContactShadows
-            position={[0, -1, 0]}
-            opacity={0.4}
-            scale={10}
-            blur={2}
-            far={4}
+            position={[0, -0.01, 0]}
+            opacity={0.3}
+            scale={8}
+            blur={1.5}
+            far={2}
           />
         )}
 
@@ -67,10 +67,10 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
           ref={controlsRef}
           makeDefault
           enableDamping
-          dampingFactor={0.08}
+          dampingFactor={0.05}
           minDistance={2}
-          maxDistance={8}
-          target={[0, 0.5, 0]}
+          maxDistance={10}
+          target={[0, 1, 0]}
         />
       </>
     );
@@ -82,15 +82,12 @@ SceneContent.displayName = 'SceneContent';
 const Scene = forwardRef<SceneRef, SceneProps>((props, ref) => {
   return (
     <Canvas
-      camera={{ position: [4, 3, 4], fov: 40 }}
-      gl={{
-        preserveDrawingBuffer: true,
-        antialias: true,
-      }}
-      style={{ background: '#1a1a1a' }}
+      camera={{ position: [3, 2, 5], fov: 45 }}
+      gl={{ preserveDrawingBuffer: true, antialias: true }}
+      style={{ background: '#ffffff' }}
       dpr={[1, 2]}
     >
-      <color attach="background" args={['#1a1a1a']} />
+      <color attach="background" args={['#ffffff']} />
       <SceneContent {...props} ref={ref} />
     </Canvas>
   );
