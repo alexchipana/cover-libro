@@ -28,13 +28,7 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
         const originalSize = new THREE.Vector2();
         renderer.getSize(originalSize);
 
-        const scale = 2;
-        renderer.setSize(originalSize.x * scale, originalSize.y * scale, false);
-
-        if (controlsRef.current) {
-          controlsRef.current.update();
-        }
-
+        renderer.setSize(originalSize.x * 2, originalSize.y * 2, false);
         renderer.render(scene, camera);
 
         const dataUrl = renderer.domElement.toDataURL('image/png', 1.0);
@@ -42,7 +36,7 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
 
         const link = document.createElement('a');
         link.href = dataUrl;
-        link.download = `book-mockup-${Date.now()}.png`;
+        link.download = `book-${Date.now()}.png`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -63,9 +57,9 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
           <ContactShadows
             position={[0, -1, 0]}
             opacity={0.4}
-            scale={8}
+            scale={10}
             blur={2}
-            far={3}
+            far={4}
           />
         )}
 
@@ -73,9 +67,9 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
           ref={controlsRef}
           makeDefault
           enableDamping
-          dampingFactor={0.05}
-          minDistance={3}
-          maxDistance={10}
+          dampingFactor={0.08}
+          minDistance={2}
+          maxDistance={8}
           target={[0, 0.5, 0]}
         />
       </>
@@ -88,7 +82,7 @@ SceneContent.displayName = 'SceneContent';
 const Scene = forwardRef<SceneRef, SceneProps>((props, ref) => {
   return (
     <Canvas
-      camera={{ position: [3, 2, 4], fov: 45 }}
+      camera={{ position: [4, 3, 4], fov: 40 }}
       gl={{
         preserveDrawingBuffer: true,
         antialias: true,
