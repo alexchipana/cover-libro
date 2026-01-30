@@ -117,7 +117,7 @@ export function Book3D({ config }: Book3DProps) {
           ]}
         >
           <boxGeometry args={[coverThickness, height, spineWidth * 1.02]} />
-          <meshStandardMaterial attach="material" {...coverMaterial} />
+          <meshStandardMaterial attach="material-0" color={0x4a4a4a} roughness={0.4} metalness={0.1} />
         </mesh>
 
         <mesh
@@ -128,12 +128,12 @@ export function Book3D({ config }: Book3DProps) {
           ]}
         >
           <boxGeometry args={[coverThickness, height, spineWidth * 1.02]} />
-          <meshStandardMaterial attach="material" {...coverMaterial} />
+          <meshStandardMaterial attach="material-0" color={0x4a4a4a} roughness={0.4} metalness={0.1} />
         </mesh>
 
         <mesh position={[0, 0, 0]}>
           <boxGeometry args={[pageBlockWidth, height - 0.02, spineWidth - coverThickness * 2]} />
-          <meshStandardMaterial attach="material" {...pageMaterial} />
+          <meshStandardMaterial attach="material-0" color={pageEdgeColor} roughness={0.9} metalness={0} />
         </mesh>
 
         {Array.from({ length: 12 }).map((_, i) => (

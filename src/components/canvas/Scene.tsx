@@ -2,7 +2,7 @@
 
 import { useRef, useImperativeHandle, forwardRef } from 'react';
 import { Canvas, useThree, useFrame } from '@react-three/fiber';
-import { OrbitControls, Environment, ContactShadows } from '@react-three/drei';
+import { OrbitControls, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
 import { Book3D } from './Book3D';
 import { Lights } from './Lights';
@@ -86,8 +86,6 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
             color="#000000"
           />
         )}
-
-        <Environment preset="city" />
 
         <OrbitControls
           ref={controlsRef}
