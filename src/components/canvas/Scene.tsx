@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useImperativeHandle, forwardRef, useEffect } from 'react';
+import { useRef, useImperativeHandle, forwardRef, useCallback } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
@@ -22,19 +22,21 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
     const { gl, scene, camera } = useThree();
     const controlsRef = useRef<any>(null);
 
+    const captureScreenshot = useCallback(() => {
+      gl.render(scene, camera);
+      
+      const dataUrl = gl.domElement.toDataURL('image/png', 1.0);
+      
+      const link = document.createElement('a');
+      link.download = `book-${Date.now()}.png`;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }, [gl, scene, camera]);
+
     useImperativeHandle(ref, () => ({
-      captureScreenshot: async () => {
-        gl.render(scene, camera);
-        
-        const dataUrl = gl.domElement.toDataURL('image/png');
-        
-        const link = document.createElement('a');
-        link.href = dataUrl;
-        link.download = `book-mockup-${Date.now()}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      },
+      captureScreenshot,
     }));
 
     return (
@@ -77,9 +79,13 @@ const Scene = forwardRef<SceneRef, SceneProps>((props, ref) => {
   return (
     <Canvas
       camera={{ position: [3, 2, 5], fov: 45 }}
-      gl={{ preserveDrawingBuffer: true, antialias: true }}
+      gl={{ 
+        preserveDrawingBuffer: true, 
+        antialias: true,
+        alpha: false,
+      }}
       style={{ background: '#ffffff' }}
-      dpr={[1, 2]}
+      dpr={2}
     >
       <color attach="background" args={['#ffffff']} />
       <SceneContent {...props} ref={ref} />
