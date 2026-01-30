@@ -96,13 +96,13 @@ export function Book3D({ config }: Book3DProps) {
 
   useEffect(() => {
     if (groupRef.current) {
-      groupRef.current.rotation.y = Math.PI / 2;
+      groupRef.current.rotation.y = 0;
     }
   }, []);
 
   return (
     <group ref={groupRef} position={[0, 0, 0]}>
-      <group position={[0, 0, 0]}>
+      <group position={[0, -0.5, 0]}>
         <mesh
           geometry={spineGeometry}
           material={spineMaterial}

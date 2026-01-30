@@ -108,7 +108,7 @@ SceneContent.displayName = 'SceneContent';
 const Scene = forwardRef<SceneRef, SceneProps>((props, ref) => {
   return (
     <Canvas
-      camera={{ position: [4, 3, 4], fov: 45 }}
+      camera={{ position: [0, 2, 6], fov: 50 }}
       gl={{
         preserveDrawingBuffer: true,
         antialias: true,
@@ -117,6 +117,7 @@ const Scene = forwardRef<SceneRef, SceneProps>((props, ref) => {
       style={{ background: '#1a1a1a' }}
       dpr={[1, 2]}
     >
+      <color attach="background" args={['#1a1a1a']} />
       <SceneContent {...props} ref={ref} />
     </Canvas>
   );
