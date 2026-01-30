@@ -6,10 +6,12 @@ export interface BookConfig {
   pageEdgeColor: string;
   width: number;
   height: number;
+  stackCount: number;
 }
 
 export interface LightingConfig {
   shadowsEnabled: boolean;
   lightIntensity: number;
   lightingType: 'soft' | 'studio';
+  shadowBlur: number;
 }

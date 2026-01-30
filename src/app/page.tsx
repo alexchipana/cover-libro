@@ -24,12 +24,14 @@ export default function Home() {
     pageEdgeColor: '#f5f5dc',
     width: 2,
     height: 3,
+    stackCount: 1,
   });
 
   const [lightingConfig, setLightingConfig] = useState<LightingConfig>({
     shadowsEnabled: true,
     lightIntensity: 1,
     lightingType: 'studio',
+    shadowBlur: 2,
   });
 
   const sceneRef = useRef<{ captureScreenshot: () => void }>(null);

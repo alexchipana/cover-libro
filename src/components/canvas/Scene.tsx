@@ -51,15 +51,24 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
           lightingType={lightingConfig.lightingType}
         />
 
-        <Book3D config={bookConfig} />
+        {Array.from({ length: bookConfig.stackCount }).map((_, i) => (
+          <Book3D
+            key={i}
+            config={{
+              ...bookConfig,
+              coverTexture: i === 0 ? bookConfig.coverTexture : null,
+              spineTexture: i === 0 ? bookConfig.spineTexture : null,
+            }}
+          />
+        ))}
 
         {lightingConfig.shadowsEnabled && (
           <ContactShadows
             position={[0, -0.01, 0]}
-            opacity={0.3}
-            scale={8}
-            blur={1.5}
-            far={2}
+            opacity={0.4}
+            scale={10}
+            blur={lightingConfig.shadowBlur}
+            far={3}
           />
         )}
 
@@ -70,7 +79,7 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
           dampingFactor={0.05}
           minDistance={2}
           maxDistance={10}
-          target={[0, 1, 0]}
+          target={[0, bookConfig.stackCount * 0.1, 0]}
         />
       </>
     );
@@ -82,7 +91,7 @@ SceneContent.displayName = 'SceneContent';
 const Scene = forwardRef<SceneRef, SceneProps>((props, ref) => {
   return (
     <Canvas
-      camera={{ position: [3, 2, 5], fov: 45 }}
+      camera={{ position: [3, 3, 5], fov: 45 }}
       gl={{ preserveDrawingBuffer: true, antialias: true }}
       style={{ background: '#ffffff' }}
       dpr={[1, 2]}
