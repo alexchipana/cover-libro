@@ -3,7 +3,6 @@
 import { useState, useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { ControlsPanel } from '@/components/ui/ControlsPanel';
-import { useScreenshot } from '@/hooks/useScreenshot';
 import { BookConfig, LightingConfig } from '@/types';
 
 const Scene = dynamic(() => import('@/components/canvas/Scene').then((mod) => mod.default), {

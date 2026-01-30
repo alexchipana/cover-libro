@@ -24,16 +24,12 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
 
     useImperativeHandle(ref, () => ({
       captureScreenshot: () => {
-        const renderer = gl as unknown as THREE.WebGLRenderer;
-        const originalSize = new THREE.Vector2();
-        renderer.getSize(originalSize);
-
-        renderer.setSize(originalSize.x * 2, originalSize.y * 2, false);
+        const renderer = gl as THREE.WebGLRenderer;
+        
         renderer.render(scene, camera);
-
+        
         const dataUrl = renderer.domElement.toDataURL('image/png');
-        renderer.setSize(originalSize.x, originalSize.y);
-
+        
         const link = document.createElement('a');
         link.href = dataUrl;
         link.download = `book-${Date.now()}.png`;
