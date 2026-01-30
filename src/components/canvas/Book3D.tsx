@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { BookConfig } from '@/types';
 
@@ -23,57 +23,83 @@ export function Book3D({ config, index = 0 }: Book3DProps) {
   const isHardcover = coverType === 'hard';
   const coverThickness = isHardcover ? 0.05 : 0.02;
   const pageBlockWidth = width - coverThickness * 2;
-  const bookOffset = index * 0.08;
+  const bookOffset = index * 0.05;
 
-  const coverMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.5, metalness: 0.1 });
-  const spineMat = new THREE.MeshStandardMaterial({ color: 0x444444, roughness: 0.5, metalness: 0.1 });
-  const pageMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(pageEdgeColor), roughness: 0.9 });
+  const coverMat = useMemo(() => {
+    return new THREE.MeshStandardMaterial({
+      color: 0x333333,
+      roughness: 0.5,
+      metalness: 0.1,
+      side: THREE.DoubleSide,
+    });
+  }, []);
+
+  const spineMat = useMemo(() => {
+    return new THREE.MeshStandardMaterial({
+      color: 0x444444,
+      roughness: 0.5,
+      metalness: 0.1,
+      side: THREE.DoubleSide,
+    });
+  }, []);
+
+  const pageMat = useMemo(() => {
+    return new THREE.MeshStandardMaterial({
+      color: new THREE.Color(pageEdgeColor),
+      roughness: 0.9,
+      side: THREE.DoubleSide,
+    });
+  }, [pageEdgeColor]);
 
   useEffect(() => {
-    if (coverTexture && typeof coverTexture === 'string') {
-      new THREE.TextureLoader().load(coverTexture, (tex) => {
-        tex.colorSpace = THREE.SRGBColorSpace;
-        coverMat.map = tex;
-        coverMat.needsUpdate = true;
-      });
-    } else if (index > 0) {
-      coverMat.color = new THREE.Color(isHardcover ? 0x2a2a2a : 0x3a3a3a);
-    }
-  }, [coverTexture, isHardcover, index]);
+    if (!coverTexture) return;
+    
+    const loader = new THREE.TextureLoader();
+    loader.load(coverTexture, (tex) => {
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.repeat.set(1, 1);
+      tex.center.set(0.5, 0.5);
+      coverMat.map = tex;
+      coverMat.color = new THREE.Color(0xffffff);
+      coverMat.needsUpdate = true;
+    });
+  }, [coverTexture, coverMat]);
 
   useEffect(() => {
-    if (spineTexture && typeof spineTexture === 'string') {
-      new THREE.TextureLoader().load(spineTexture, (tex) => {
-        tex.colorSpace = THREE.SRGBColorSpace;
-        spineMat.map = tex;
-        spineMat.needsUpdate = true;
-      });
-    } else if (index > 0) {
-      spineMat.color = new THREE.Color(0x3a3a3a);
-    }
-  }, [spineTexture, index]);
+    if (!spineTexture) return;
+    
+    const loader = new THREE.TextureLoader();
+    loader.load(spineTexture, (tex) => {
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.repeat.set(1, 1);
+      tex.center.set(0.5, 0.5);
+      spineMat.map = tex;
+      spineMat.color = new THREE.Color(0xffffff);
+      spineMat.needsUpdate = true;
+    });
+  }, [spineTexture, spineMat]);
 
   return (
-    <group position={[0, bookOffset, 0]} rotation={[0, -Math.PI / 6 + index * 0.05, 0]}>
+    <group position={[0, bookOffset, 0]} rotation={[0, -Math.PI / 6 + index * 0.03, 0]}>
       <group position={[0, height / 2, 0]}>
         <mesh position={[-pageBlockWidth / 2 - coverThickness / 2, 0, 0]}>
           <boxGeometry args={[coverThickness, height, spineWidth + 0.01]} />
-          <primitive object={coverMat} attach="material" />
+          <meshStandardMaterial attach="material" {...coverMat} />
         </mesh>
 
         <mesh position={[pageBlockWidth / 2 + coverThickness / 2, 0, 0]}>
           <boxGeometry args={[coverThickness, height, spineWidth + 0.01]} />
-          <primitive object={coverMat} attach="material" />
+          <meshStandardMaterial attach="material" {...coverMat} />
         </mesh>
 
         <mesh position={[0, 0, 0]}>
           <boxGeometry args={[pageBlockWidth, height - 0.01, spineWidth - 0.02]} />
-          <primitive object={pageMat} attach="material" />
+          <meshStandardMaterial attach="material" {...pageMat} />
         </mesh>
 
         <mesh position={[0, 0, -spineWidth / 2 - 0.005]}>
           <boxGeometry args={[pageBlockWidth, height - 0.01, 0.01]} />
-          <primitive object={spineMat} attach="material" />
+          <meshStandardMaterial attach="material" {...spineMat} />
         </mesh>
       </group>
     </group>
