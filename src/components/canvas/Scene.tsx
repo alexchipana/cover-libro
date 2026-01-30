@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useImperativeHandle, forwardRef } from 'react';
-import { Canvas, useThree, useFrame } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
 import { Book3D } from './Book3D';
@@ -21,7 +21,6 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
   ({ bookConfig, lightingConfig }, ref) => {
     const { gl, scene, camera } = useThree();
     const controlsRef = useRef<any>(null);
-    const groupRef = useRef<THREE.Group>(null);
 
     useImperativeHandle(ref, () => ({
       captureScreenshot: () => {
@@ -30,11 +29,7 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
         renderer.getSize(originalSize);
 
         const scale = 2;
-        const newWidth = originalSize.x * scale;
-        const newHeight = originalSize.y * scale;
-
-        renderer.setSize(newWidth, newHeight, false);
-        renderer.setPixelRatio(window.devicePixelRatio * scale);
+        renderer.setSize(originalSize.x * scale, originalSize.y * scale, false);
 
         if (controlsRef.current) {
           controlsRef.current.update();
@@ -43,9 +38,7 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
         renderer.render(scene, camera);
 
         const dataUrl = renderer.domElement.toDataURL('image/png', 1.0);
-
         renderer.setSize(originalSize.x, originalSize.y);
-        renderer.setPixelRatio(window.devicePixelRatio);
 
         const link = document.createElement('a');
         link.href = dataUrl;
@@ -53,15 +46,8 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        URL.revokeObjectURL(dataUrl);
       },
     }));
-
-    useFrame((state, delta) => {
-      if (groupRef.current) {
-        groupRef.current.rotation.y += delta * 0.05;
-      }
-    });
 
     return (
       <>
@@ -71,19 +57,15 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
           lightingType={lightingConfig.lightingType}
         />
 
-        <group ref={groupRef} position={[0, 0, 0]}>
-          <Book3D config={bookConfig} />
-        </group>
+        <Book3D config={bookConfig} />
 
         {lightingConfig.shadowsEnabled && (
           <ContactShadows
-            position={[0, -1.5, 0]}
-            opacity={0.5}
-            scale={10}
+            position={[0, -1, 0]}
+            opacity={0.4}
+            scale={8}
             blur={2}
-            far={4}
-            resolution={256}
-            color="#000000"
+            far={3}
           />
         )}
 
@@ -92,11 +74,9 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
           makeDefault
           enableDamping
           dampingFactor={0.05}
-          minDistance={2}
-          maxDistance={15}
-          minPolarAngle={Math.PI / 6}
-          maxPolarAngle={Math.PI / 1.5}
-          target={[0, 0, 0]}
+          minDistance={3}
+          maxDistance={10}
+          target={[0, 0.5, 0]}
         />
       </>
     );
@@ -108,11 +88,10 @@ SceneContent.displayName = 'SceneContent';
 const Scene = forwardRef<SceneRef, SceneProps>((props, ref) => {
   return (
     <Canvas
-      camera={{ position: [0, 2, 6], fov: 50 }}
+      camera={{ position: [3, 2, 4], fov: 45 }}
       gl={{
         preserveDrawingBuffer: true,
         antialias: true,
-        alpha: true,
       }}
       style={{ background: '#1a1a1a' }}
       dpr={[1, 2]}
