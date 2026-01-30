@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useImperativeHandle, forwardRef } from 'react';
+import { useRef, useImperativeHandle, forwardRef, useEffect } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
@@ -23,16 +23,14 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
     const controlsRef = useRef<any>(null);
 
     useImperativeHandle(ref, () => ({
-      captureScreenshot: () => {
-        const renderer = gl as THREE.WebGLRenderer;
+      captureScreenshot: async () => {
+        gl.render(scene, camera);
         
-        renderer.render(scene, camera);
-        
-        const dataUrl = renderer.domElement.toDataURL('image/png');
+        const dataUrl = gl.domElement.toDataURL('image/png');
         
         const link = document.createElement('a');
         link.href = dataUrl;
-        link.download = `book-${Date.now()}.png`;
+        link.download = `book-mockup-${Date.now()}.png`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
