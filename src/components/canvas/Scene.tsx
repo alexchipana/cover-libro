@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useImperativeHandle, forwardRef, useCallback } from 'react';
+import { useRef, useImperativeHandle, forwardRef, useCallback, useEffect } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
@@ -21,18 +21,31 @@ const SceneContent = forwardRef<SceneRef, SceneProps>(
   ({ bookConfig, lightingConfig }, ref) => {
     const { gl, scene, camera } = useThree();
     const controlsRef = useRef<any>(null);
+    const renderCount = useRef(0);
+
+    useEffect(() => {
+      renderCount.current += 1;
+    }, [bookConfig, lightingConfig]);
 
     const captureScreenshot = useCallback(() => {
-      gl.render(scene, camera);
-      
-      const dataUrl = gl.domElement.toDataURL('image/png', 1.0);
-      
-      const link = document.createElement('a');
-      link.download = `book-${Date.now()}.png`;
-      link.href = dataUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      requestAnimationFrame(() => {
+        gl.render(scene, camera);
+        
+        setTimeout(() => {
+          try {
+            const dataUrl = gl.domElement.toDataURL('image/png', 1.0);
+            
+            const link = document.createElement('a');
+            link.download = `book-mockup-${Date.now()}.png`;
+            link.href = dataUrl;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          } catch (err) {
+            console.error('Export error:', err);
+          }
+        }, 100);
+      });
     }, [gl, scene, camera]);
 
     useImperativeHandle(ref, () => ({
@@ -86,6 +99,9 @@ const Scene = forwardRef<SceneRef, SceneProps>((props, ref) => {
       }}
       style={{ background: '#ffffff' }}
       dpr={2}
+      onCreated={({ gl }) => {
+        gl.setClearColor('#ffffff', 1);
+      }}
     >
       <color attach="background" args={['#ffffff']} />
       <SceneContent {...props} ref={ref} />
