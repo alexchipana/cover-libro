@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { ControlsPanel } from '@/components/ui/ControlsPanel';
 import { BookConfig, LightingConfig } from '@/types';
 
-const Scene = dynamic(() => import('@/components/canvas/Scene').then((mod) => mod.default), {
+const Scene = dynamic(() => import('@/components/canvas/Scene'), {
   ssr: false,
   loading: () => (
     <div className="loading-overlay">
@@ -32,14 +32,6 @@ export default function Home() {
     shadowBlur: 2,
   });
 
-  const sceneRef = useRef<{ captureScreenshot: () => void }>(null);
-
-  const handleScreenshot = useCallback(() => {
-    if (sceneRef.current) {
-      sceneRef.current.captureScreenshot();
-    }
-  }, []);
-
   const handleConfigChange = useCallback((updates: Partial<BookConfig>) => {
     setBookConfig((prev) => ({ ...prev, ...updates }));
   }, []);
@@ -48,11 +40,21 @@ export default function Home() {
     setLightingConfig((prev) => ({ ...prev, ...updates }));
   }, []);
 
+  const handleExport = useCallback(() => {
+    const canvas = document.querySelector('canvas');
+    if (canvas) {
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `book-${Date.now()}.png`;
+      link.href = dataUrl;
+      link.click();
+    }
+  }, []);
+
   return (
     <main className="app-container">
       <div className="canvas-container">
         <Scene
-          ref={sceneRef}
           bookConfig={bookConfig}
           lightingConfig={lightingConfig}
         />
@@ -62,7 +64,7 @@ export default function Home() {
         lightingConfig={lightingConfig}
         onBookConfigChange={handleConfigChange}
         onLightingChange={handleLightingChange}
-        onExport={handleScreenshot}
+        onExport={handleExport}
       />
     </main>
   );
